@@ -63,3 +63,9 @@ resource "aws_security_group_rule" "mgmt_ping" {
 
   security_group_id = "${aws_security_group.test.id}"
 }
+
+resource "null_resource" "test" {
+  provisioner "local-exec" {
+    command = "ping -c 3 ${aws_instance.test.public_ip}"
+  }
+}
