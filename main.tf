@@ -3,6 +3,13 @@ variable "ami_id" {}
 variable "instance_type" {}
 variable "ssh_key" {}
 variable "ssh_key_name" {}
+variable "vpc" {}
+variable "subnet" {}
+variable "region" {}
+
+provider "aws" {
+  region = "${var.region}"
+}
 
 resource "aws_instance" "test" {
   ami                         = "${var.ami_id}"
@@ -11,7 +18,7 @@ resource "aws_instance" "test" {
   key_name                    = "${ var.ssh_key_name }"
   security_groups             = ["${aws_security_group.test.id}"]
   associate_public_ip_address = true
-  subnet_id                   = "${aws_subnet.az1_pub.id}"
+  subnet_id                   = "${var.subnet}"
 
   timeouts {
     create = "10m"
@@ -41,7 +48,7 @@ resource "aws_instance" "test" {
 
 resource "aws_security_group" "test" {
   name   = "Test"
-  vpc_id = "${aws_vpc.main.id}"
+  vpc_id = "${var.vpc}"
 }
 
 resource "aws_security_group_rule" "mgmt_ping" {
