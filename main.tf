@@ -25,27 +25,25 @@ resource "aws_instance" "test" {
     update = "10m"
   }
 
-  depends_on = ["null_resource.test"]
-
   provisioner "local-exec" {
     command = "ping -c 3 8.8.8.8"
   }
 
-  provisioner "local-exec" {
-    command = "ping -c 3 ${aws_instance.test.public_ip}"
-  }
+  #provisioner "local-exec" {
+  #  command = "ping -c 3 ${aws_instance.test.public_ip}"
+  #}
 
-  provisioner "remote-exec" {
-    inline = [
-      "echo testing",
-    ]
+  #provisioner "remote-exec" {
+  #  inline = [
+  #    "echo testing",
+  #  ]
 
-    connection {
-      type        = "ssh"
-      user        = "ec2-user"
-      private_key = "${var.ssh_key}"
-    }
-  }
+  #  connection {
+  #    type        = "ssh"
+  #    user        = "ec2-user"
+  #    private_key = "${var.ssh_key}"
+  #  }
+  #}
 }
 
 resource "aws_security_group" "test" {
