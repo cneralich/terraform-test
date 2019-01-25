@@ -25,6 +25,8 @@ resource "aws_instance" "test" {
     update = "10m"
   }
 
+  depends_on = ["null_resource.test"]
+
   provisioner "local-exec" {
     command = "ping -c 3 8.8.8.8"
   }
