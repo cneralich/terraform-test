@@ -6,6 +6,7 @@ variable "ssh_key_name" {}
 variable "vpc" {}
 variable "subnet" {}
 variable "region" {}
+variable "existing_ec2_ip" {}
 
 provider "aws" {
   region = "${var.region}"
@@ -26,7 +27,7 @@ resource "aws_instance" "test" {
   }
 
   provisioner "local-exec" {
-    command = "ping -c 3 8.8.8.8"
+    command = "ping -c 3 ${var.existing_ec2_ip}"
   }
 
   provisioner "local-exec" {
@@ -51,7 +52,7 @@ resource "aws_security_group" "test" {
   vpc_id = "${var.vpc}"
 }
 
-resource "aws_security_group_rule" "mgmt_ping" {
+resource "aws_security_group_rule" "test" {
   type      = "ingress"
   from_port = -1
   to_port   = -1
@@ -59,13 +60,7 @@ resource "aws_security_group_rule" "mgmt_ping" {
 
   cidr_blocks      = ["0.0.0.0/0"]
   ipv6_cidr_blocks = ["::/0"]
-  description      = "Ping from anywhere"
+  description      = "Anything from anywhere"
 
   security_group_id = "${aws_security_group.test.id}"
-}
-
-resource "null_resource" "test" {
-  provisioner "local-exec" {
-    command = "echo aws_instance.test.public_ip"
-  }
 }
